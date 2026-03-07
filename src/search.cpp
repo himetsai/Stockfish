@@ -124,12 +124,6 @@ void update_correction_history(const Position& pos,
     (*(ss - 4)->continuationCorrectionHistory)[pc][to] << bonus4;
 }
 
-int NMP_Base   = 7;
-int Margin_Div = 512;
-int Margin_Max = 2;
-
-TUNE(SetRange(5, 9), NMP_Base, SetRange(256, 1024), Margin_Div, SetRange(1, 3), Margin_Max);
-
 // Add a small random component to draw evaluations to avoid 3-fold blindness
 Value value_draw(size_t nodes) { return VALUE_DRAW - 1 + Value(nodes & 0x2); }
 Value value_to_tt(Value v, int ply);
@@ -903,7 +897,7 @@ Value Search::Worker::search(
         assert((ss - 1)->currentMove != Move::null());
 
         // Null move dynamic reduction based on depth
-        Depth R = NMP_Base + depth / 3 + std::clamp((ss->staticEval - beta) / Margin_Div, 0, Margin_Max);
+        Depth R = 7 + depth / 3 + std::clamp((ss->staticEval - beta) / 512, 0, 2);
         do_null_move(pos, st, ss);
 
         Value nullValue = -search<NonPV>(pos, ss + 1, -beta, -beta + 1, depth - R, false);
