@@ -1208,6 +1208,10 @@ moves_loop:  // When in check, search starts here
         if ((ss + 1)->cutoffCnt > 1)
             r += 249 + 1073 * ((ss + 1)->cutoffCnt > 2) + 1064 * allNode;
 
+        // Increase reduction if opponent's position worsened
+        if (opponentWorsening)
+            r += 256;
+
         // For first picked move (ttMove) reduce reduction
         if (move == ttData.move)
             r -= 2069;
